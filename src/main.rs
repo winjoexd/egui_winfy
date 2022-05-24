@@ -1,4 +1,6 @@
 use eframe::egui;
+use egui::{FontFamily, FontId, RichText, TextStyle};
+use egui::TextStyle::*;
 mod fy_lib;
 use fy_lib::fy_handle;
 
@@ -30,19 +32,30 @@ fn setup_custom_fonts(ctx: &egui::Context) {
     // Put my font first (highest priority) for proportional text:
     fonts
         .families
-        .entry(egui::FontFamily::Proportional)
+        .entry(FontFamily::Proportional)
         .or_default()
         .insert(0, "my_font".to_owned());
 
     // Put my font as last fallback for monospace:
     fonts
         .families
-        .entry(egui::FontFamily::Monospace)
+        .entry(FontFamily::Monospace)
         .or_default()
         .push("my_font".to_owned());
 
     // Tell egui to use these fonts:
     ctx.set_fonts(fonts);
+
+    let mut style = (*ctx.style()).clone();
+    style.text_styles = [
+        (Heading, FontId::new(30.0, FontFamily::Monospace)),
+        (Body, FontId::new(30.0, FontFamily::Monospace)),
+        (Monospace, FontId::new(30.0, FontFamily::Monospace)),
+        (Button, FontId::new(30.0, FontFamily::Monospace)),
+        (Small, FontId::new(30.0, FontFamily::Monospace)),
+    ]
+    .into();
+    ctx.set_style(style);
 }
 
 impl WinFY {
@@ -68,7 +81,7 @@ impl eframe::App for WinFY {
                 if ui.button("WinFY").clicked() {
                     self.output = fy_handle(self.input.to_string(), "ENG".to_string(), "CHT".to_string());
                 }
-                
+
                 if ui.button("Exit").clicked() {
                     _frame.quit();
                 }
